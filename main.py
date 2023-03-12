@@ -8,9 +8,7 @@ my_label, images, status, color = {}, {}, {}, {}
 
 cart = open("cart.txt", 'w')
 
-total_price, price, base, nop, \
-    background_label, new, \
-    image_margherita, image_turk, image_classic, cart_exp, \
+total_price, price, base, nop, background_label, new, image_margherita, image_turk, image_classic, cart_exp, \
     clear_message = 0, 0, 0, 0, 0, 0, 0, 0, 0, "", ""
 
 desserts = (
