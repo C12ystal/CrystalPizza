@@ -17,15 +17,19 @@ Sadece sos seçemezsiniz! Pizzanın üzerinde sos dışında en az bir malzeme o
 İstediğiniz zaman "Go Back" tuşuna basarak pizza seçme ekranına geri dönebilirsiniz veya "Add to Cart" tuşuna basarak hazırladığınız pizzayı sepetinize ekleyebilirsiniz.
 "Add to Cart" tuşuna bastıktan sonra pizza seçme ekranına geri dönersiniz ve siparişinize daha fazla pizza ekleyebilirsiniz.
 
+Sepetinizdeki her pizza başına bir içecek ve bir ekstra seçme hakkınız olur.
+
 --- İçecekler ---
 
 Karşınıza çıkan içecek listesinden istediğinize tıklayarak 1 litre tekrar tıklayarak 2.5'litrelik içecek seçebilir, "Go Back" ve "Add to Cart" tuşlarını kullanabilirsiniz.
-Aynı içecekten birden fazla sipariş vermek için add to cart dedikten sonra içecek ekranına tekrar dönüp aynı şeyi seçerek sepetinize eklerseniz 2. defa sepetinize ekler
+Seçtiğiniz içecek sayısı sepetinizdeki pizza sayısına eşit olduğunda tuşlar kilitlenir, başka bir şey seçmek isterseniz 2 kere tekrar tıklayarak seçiminizden vazgeçip
+diğer seçeneklerin kilidini açabilirsiniz
+Aynı içecekten birden fazla sipariş vermek için 'add to cart' dedikten sonra aynı şeyi tekrar seçip 'add to cart' diyerek sepetinize eklerseniz 2. defa sepetinize ekler
 ve fiyata yansıtır.
 
---- Tatlılar ---
+--- Ekstralar ---
 
-İçecekler ekranında yaptığınız şeylerin aynısını burdada yapabilirsiniz, tek farkı 1 litre ve 2.5 litre seçenekleri yerine 1 porsiyon ve 2 porsiyon seçenekleridir.
+İçecekler ekranında yaptığınız şeylerin aynısını burda da yapabilirsiniz; tek farkı, 1 litre ve 2.5 litre seçenekleri yerine sadece 1 porsiyon seçeneği bulunmasıdır.
 
 --- Checkout ---
 
