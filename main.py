@@ -57,14 +57,14 @@ def main():
                                width=int(width * 0.036), height=int(height * 0.00390625),
                                command=lambda: [reset_status(), forget_buttons(),
                                                 add_base('Extra'),
-                                                options(extras)])
+                                                options(extras), lock_buttons("")])
         button_checkout = Button(root, fg="#341691", bg="light blue", font="arial, 9 bold", text="Checkout",
                                  width=int(width * 0.036), height=int(height * 0.00390625),
                                  command=lambda: [forget_buttons(), checkout_screen()])
         button_drinks = Button(root, fg="#341691", font="arial, 9 bold", text="Drinks", bg='white',
                                width=int(width * 0.036), height=int(height * 0.00390625),
                                command=lambda: [forget_buttons(), add_base('Drink'),
-                                                options(drinks)])
+                                                options(drinks), lock_buttons("")])
         exit_button = Button(root, bg='red', font="arial, 15 bold", text='x', width=2,
                              height=1, fg='white',
                              command=lambda: [cart.write("\n-abandoned-"), cart.close(), root.destroy()])
@@ -95,6 +95,14 @@ def main():
         color['clear'] = 'Orange'
         clear_message = 'Clear Cart'
 
+    def fix_status():
+        global nod, nodt
+        for i in status:
+            if status[i] in ('1L', '2.5L'):
+                nod -= 1
+            if status[i] == '1 Serving of':
+                nodt -= 1
+
     reset_status()
 
     def comp_price():
@@ -121,7 +129,8 @@ def main():
                     price += prices[i] * 1.00
                 elif status[i] == "2 Packets of":
                     price += prices[i] * 2
-        price_label = Label(root, text=f"   Total amount : {price}   ", bg='#fcfcfc', fg='#341691', font=('ariel', 20))
+        price_label = Label(root, text=f"             Total amount : {price}             ", bg='#fcfcfc', fg='#341691',
+                            font=('ariel', 20))
         price_label.grid(row=3, column=5, padx=(width * 0.1565841874084919, 0), pady=(width * 0.06, 0))
 
     def enable_buttons(ingredients):
@@ -142,7 +151,7 @@ def main():
                     if i not in ingredients:
                         status[i] = '+'
                         my_label[i].configure(state=NORMAL, text=f"{status[i]} {i}")
-        else:
+        elif base == 'Extra':
             for i in extras:
                 if nodt == nop:
                     if i not in ingredients:
@@ -196,7 +205,6 @@ def main():
                         status[ingredient] = "+"
                         color[ingredient] = "gray"
                         nodt -= 1
-
                     selected_extras = []
                     for i in status:
                         if status[i] == "1 Serving of":
@@ -218,7 +226,6 @@ def main():
                     status[ingredient] = "+"
                     color[ingredient] = "gray"
                     nod -= 1
-
                 selected_drinks = []
                 for i in status:
                     if status[i] in ("1L", "2.5L"):
@@ -319,27 +326,26 @@ def main():
                 if y == 5:
                     y = 0
                     x += 1
-            lock_buttons("")
             back_label = Button(root, fg="white", font="TimesNewRoman 8 bold", text=f"Go Back",
                                 width=int(width * 0.015625),
                                 height=int(height * 0.0027777777777778), bg="red",
-                                command=lambda: [add_base(0), forget_buttons(),
-                                                 background(),
-                                                 main_menu()])
+                                command=lambda: [add_base(0), forget_buttons(), fix_status(), reset_status(),
+                                                 background(), main_menu()])
             back_label.grid(row=5, column=5, padx=(width * 0.1565841874084919, 0), pady=(width * 0.059809663250366, 0))
             if base == 'Drink':
                 add_cart_label = Button(root, fg="white", font="TimesNewRoman 8 bold", text=f"Add to Cart",
                                         width=int(width * 0.015625),
                                         height=int(height * 0.0027777777777778), bg="green",
-                                        command=lambda: [add_to_cart(), lock_buttons(""), forget_buttons(),
+                                        command=lambda: [add_to_cart(), forget_buttons(),
                                                          reset_status(), background(),
-                                                         options(drinks), add_message()])
+                                                         options(drinks), lock_buttons(""), add_message()])
             else:
                 add_cart_label = Button(root, fg="white", font="TimesNewRoman 8 bold", text=f"Add to Cart",
                                         width=int(width * 0.015625),
                                         height=int(height * 0.0027777777777778), bg="green",
-                                        command=lambda: [add_to_cart(), lock_buttons(""), forget_buttons(),
+                                        command=lambda: [add_to_cart(), forget_buttons(),
                                                          reset_status(), background(), options(extras),
+                                                         lock_buttons(""),
                                                          add_message()])
             add_cart_label.grid(row=1, column=5, padx=(width * 0.1565841874084919, 0),
                                 pady=(width * 0.109809663250366, 0))
@@ -589,7 +595,7 @@ def main():
     def add_message():
         message_label = Label(root, text="Items have been added to your cart!", bg='#fcfcfc', fg='lime',
                               font=('ariel', 20))
-        message_label.grid(row=3, column=5, padx=(width * 0.2065841874084919, 0), pady=(width * 0.06, 0))
+        message_label.grid(row=3, column=5, padx=(width * 0.1565841874084919, 0), pady=(width * 0.06, 0))
 
     main_menu()
     root.mainloop()
