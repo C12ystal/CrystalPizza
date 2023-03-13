@@ -464,7 +464,7 @@ def main():
         global tc_entry
         tc_label = Label(root, text="Social Security Number:", font='Arial, 24', bg='#fcfcfc')
         tc_entry = Entry(root, width=int(width / 100), font='Arial, 24')
-        tc_label.grid(row=0, column=0, padx=width / 20, pady=(width / 10, width / 100))
+        tc_label.grid(row=0, column=0, padx=width / 20, pady=(width / 7, width / 100))
         tc_entry.grid(row=1, column=0, padx=width / 20)
         global ccn_entry
         ccn_label = Label(root, text="Credit Card Number:", font='Arial, 24', bg='#fcfcfc')
@@ -493,13 +493,13 @@ def main():
         clear_label.grid(row=4, column=1)
 
         cart_label_1 = Label(root, text=f"Total:{total_price}" + f"{cart_exp[:450]}", font='Arial 12', bg='#fcfcfc')
-        cart_label_1.place(x=width * 0.48, y=width / 14)
+        cart_label_1.place(x=width * 0.48, y=width / 16)
 
         cart_label_2 = Label(root, text=f"{cart_exp[450:900]}", font='Arial 12', bg='#fcfcfc')
-        cart_label_2.place(x=width * 0.65, y=width / 14)
+        cart_label_2.place(x=width * 0.65, y=width / 16)
 
         cart_label_3 = Label(root, text=f"{cart_exp[900:1350]}", font='Arial 12', bg='#fcfcfc')
-        cart_label_3.place(x=width * 0.82, y=width / 14)
+        cart_label_3.place(x=width * 0.82, y=width / 16)
 
         purchase_label = Button(root, fg="white", font="TimesNewRoman 8 bold", text=f"Make Purchase",
                                 width=int(width * 0.015625),
