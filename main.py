@@ -8,12 +8,12 @@ my_label, images, status, color = {}, {}, {}, {}
 
 cart = open("cart.txt", 'w')
 
-total_price, price, base, nop, nod, background_label, new, image_margherita, image_turk, image_classic, cart_exp, \
-    clear_message = 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", ""
+total_price, price, base, nop, nod, background_label, new, image_margherita, image_turk, image_classic, nodt, cart_exp, \
+    clear_message = 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", "Clear Cart"
 
-desserts = (
+extras = (
     'Tiramisu', 'Pudding', 'Profiterol', 'Suffle', 'Macaron', 'Kadayıf', 'Baklava', 'Magnolia', 'Ice Cream',
-    'Cheesecake')
+    'Cheesecake', 'Fries', 'Chicken Nuggets')
 
 drinks = ('Coke', 'Pepsi', 'Orange Juice', 'Ayran', 'Sprite', 'Fanta', 'Ice Tea')
 
@@ -30,7 +30,8 @@ prices = {'Goat Cheese': 20, 'Meat': 20, 'Ketchup': 1, 'Mayonnaise': 1, 'Mustard
           'Black olives': 7, 'Green pepper': 9, 'Garlic': 6, 'Tomato': 8, 'Basil': 12, 'Coke': 4, 'Pepsi': 4,
           'Orange Juice': 6, 'Ayran': 4, 'Sprite': 4, 'Fanta': 4, 'Ice Tea': 5,
           'Tiramisu': 16, 'Pudding': 8, 'Profiterol': 12,
-          'Suffle': 16, 'Macaron': 5, 'Cheesecake': 16, 'Kadayıf': 12, 'Baklava': 16, 'Magnolia': 10, 'Ice Cream': 5}
+          'Suffle': 16, 'Macaron': 5, 'Cheesecake': 16, 'Kadayıf': 12, 'Baklava': 16, 'Magnolia': 10, 'Ice Cream': 5,
+          'Fries': 5, 'Chicken Nuggets': 10}
 
 
 def main():
@@ -41,7 +42,7 @@ def main():
     root.attributes('-fullscreen', True)
     bg = PhotoImage(file="background.png")
 
-    for a in ('margherita', 'turk', 'classic', 'drinks', 'desserts', 'checkout', 'custom'):
+    for a in ('margherita', 'turk', 'classic', 'drinks', 'extras', 'checkout', 'custom'):
         images[a] = ImageTk.PhotoImage(
             Image.open(f"{a}.png").resize((int(width * 0.2562225475841874), int(height * 0.3515625)), Image.LANCZOS))
 
@@ -52,11 +53,11 @@ def main():
                               width=int(width * 0.036), height=int(height * 0.00390625),
                               command=lambda: [forget_buttons(), background(), pizza_type_buttons()])
         nop_label = Label(root, text=nop, font=f"arial, {int(width / 50)} bold", bg='white', )
-        button_desserts = Button(root, fg="#341691", font="arial, 9 bold", text="Desserts", bg='white',
-                                 width=int(width * 0.036), height=int(height * 0.00390625),
-                                 command=lambda: [reset_status(), forget_buttons(),
-                                                  add_base('Dessert'),
-                                                  options(desserts)])
+        button_extras = Button(root, fg="#341691", font="arial, 9 bold", text="Extras", bg='white',
+                               width=int(width * 0.036), height=int(height * 0.00390625),
+                               command=lambda: [reset_status(), forget_buttons(),
+                                                add_base('Extra'),
+                                                options(extras)])
         button_checkout = Button(root, fg="#341691", bg="light blue", font="arial, 9 bold", text="Checkout",
                                  width=int(width * 0.036), height=int(height * 0.00390625),
                                  command=lambda: [forget_buttons(), checkout_screen()])
@@ -70,7 +71,7 @@ def main():
         exit_button.place(x=width - width / 35, y=width / 300)
         button_pizza.place(x=width * 0.23, y=width * 0.22)
         nop_label.place(x=width * 0.20, y=width * 0.22)
-        button_desserts.place(x=width * 0.23, y=width * 0.48)
+        button_extras.place(x=width * 0.23, y=width * 0.48)
         button_drinks.place(x=width * 0.53, y=width * 0.22)
         button_checkout.place(x=width * 0.53, y=width * 0.48)
 
@@ -78,26 +79,27 @@ def main():
         image_pizzas.place(x=width * 0.23, y=width * 0.02)
         image_drinks = Label(root, image=images['drinks'])
         image_drinks.place(x=width * 0.53, y=width * 0.02)
-        image_desserts = Label(root, image=images['desserts'])
-        image_desserts.place(x=width * 0.23, y=width * 0.28)
+        image_extras = Label(root, image=images['extras'])
+        image_extras.place(x=width * 0.23, y=width * 0.28)
         image_checkout = Label(root, image=images['checkout'])
         image_checkout.place(x=width * 0.53, y=width * 0.28)
 
     def reset_status():
-        global status
-        global color
-        for i in pizza_ingredients + sauces + desserts:
+        global status, color, clear_message
+        for i in pizza_ingredients + sauces:
             status[i] = 'No'
             color[i] = 'Gray'
-        for i in drinks:
+        for i in drinks + extras:
             status[i] = '+'
             color[i] = 'Gray'
+        color['clear'] = 'Orange'
+        clear_message = 'Clear Cart'
 
     reset_status()
 
     def comp_price():
         global price
-        if base == 'Drink' or base == 'Dessert':
+        if base == 'Drink' or base == 'Extra':
             price = 0
             for i in status:
                 if status[i] == "1L" or status[i] == "1 Serving of":
@@ -120,25 +122,36 @@ def main():
                 elif status[i] == "2 Packets of":
                     price += prices[i] * 2
         price_label = Label(root, text=f"   Total amount : {price}   ", bg='#fcfcfc', fg='#341691', font=('ariel', 20))
-        price_label.grid(row=3, column=5, padx=(width * 0.2065841874084919, 0), pady=(width * 0.06, 0))
+        price_label.grid(row=3, column=5, padx=(width * 0.1565841874084919, 0), pady=(width * 0.06, 0))
 
     def enable_buttons(ingredients):
-        for i in pizza_ingredients + sauces + drinks + desserts:
+        for i in pizza_ingredients + sauces + drinks + extras:
             if i not in ingredients:
                 color[i] = 'gray'
                 status[i] = 'Disabled'
 
     def lock_buttons(ingredients):
         global status
-        for i in drinks:
-            if nod == nop:
-                if i not in ingredients:
-                    my_label[i].configure(state=DISABLED)
-                    status[i] = 'Disabled'
-            else:
-                if i not in ingredients:
-                    status[i] = '+'
-                    my_label[i].configure(state=NORMAL, text=f"{status[i]} {i}")
+        if base == 'Drink':
+            for i in drinks:
+                if nod == nop:
+                    if i not in ingredients:
+                        my_label[i].configure(state=DISABLED)
+                        status[i] = 'Disabled'
+                else:
+                    if i not in ingredients:
+                        status[i] = '+'
+                        my_label[i].configure(state=NORMAL, text=f"{status[i]} {i}")
+        else:
+            for i in extras:
+                if nodt == nop:
+                    if i not in ingredients:
+                        my_label[i].configure(state=DISABLED)
+                        status[i] = 'Disabled'
+                else:
+                    if i not in ingredients:
+                        status[i] = '+'
+                        my_label[i].configure(state=NORMAL, text=f"{status[i]} {i}")
 
     def add_base(pizza_type):
         global base
@@ -148,13 +161,13 @@ def main():
         background()
 
     def add_ingredient(ingredient):
-        global nod
+        global nod, nodt
         if type(ingredient) == tuple:
             for i in ingredient:
                 add_ingredient(i)
         else:
             if base != 'Drink':
-                if ingredient not in sauces and ingredient not in desserts:
+                if ingredient not in sauces and ingredient not in extras:
                     if status[ingredient] != "With" and status[ingredient] != "Extra":
                         status[ingredient] = "With"
                         color[ingredient] = "#1d1691"
@@ -175,16 +188,24 @@ def main():
                         status[ingredient] = "No"
                         color[ingredient] = "gray"
                 else:
-                    if status[ingredient] != "1 Serving of" and status[ingredient] != "2 Servings of":
+                    if status[ingredient] != "1 Serving of":
                         status[ingredient] = "1 Serving of"
                         color[ingredient] = "#1d1691"
-                    elif status[ingredient] != "2 Servings of":
-                        status[ingredient] = "2 Servings of"
-                        color[ingredient] = "#341691"
+                        nodt += 1
                     else:
-                        status[ingredient] = "No"
+                        status[ingredient] = "+"
                         color[ingredient] = "gray"
+                        nodt -= 1
 
+                    selected_extras = []
+                    for i in status:
+                        if status[i] == "1 Serving of":
+                            selected_extras.append(i)
+
+                    if nodt == nop:
+                        lock_buttons(selected_extras)
+                    else:
+                        lock_buttons(selected_extras)
             else:
                 if status[ingredient] != "1L" and status[ingredient] != "2.5L":
                     status[ingredient] = "1L"
@@ -215,11 +236,11 @@ def main():
     def options(opts):
         y = 0
         x = 0
-        if base not in ('Drink', 'Dessert'):
+        if base not in ('Drink', 'Extra'):
             enable_buttons(opts)
             for i in opts:
                 my_label[i] = Button(root, fg="white", font="TimesNewRoman 8 bold", text=f"{status[i]} {i}",
-                                     width=int(width * 0.015625),
+                                     width=int(width * 0.017625),
                                      height=int(height * 0.0027777777777778), bg=color[i],
                                      command=lambda i=i: [add_ingredient(i),
                                                           my_label[i].configure(bg=color[i], text=f"{status[i]} {i}"),
@@ -250,7 +271,7 @@ def main():
                                     command=lambda: [add_base(0), forget_buttons(),
                                                      reset_status(), background(),
                                                      pizza_type_buttons()])
-                back_label.grid(row=5, column=5, padx=(width * 0.2065841874084919, 0),
+                back_label.grid(row=5, column=5, padx=(width * 0.1565841874084919, 0),
                                 pady=(width * 0.059809663250366, 0))
 
                 add_cart_label = Button(root, fg="white", font="TimesNewRoman 8 bold", text=f"Add to Cart",
@@ -258,14 +279,14 @@ def main():
                                         height=int(height * 0.0027777777777778), bg="green",
                                         command=lambda: [add_to_cart(), add_base(0), forget_buttons(),
                                                          reset_status(), main_menu()])
-                add_cart_label.grid(row=1, column=5, padx=(width * 0.2065841874084919, 0),
+                add_cart_label.grid(row=1, column=5, padx=(width * 0.1565841874084919, 0),
                                     pady=(width * 0.109809663250366, 0))
 
         else:
             for i in opts:
                 if status[i] == 'Disabled':
                     my_label[i] = Button(root, fg="white", font="TimesNewRoman 8 bold", text=f"{status[i]} {i}",
-                                         width=int(width * 0.015625),
+                                         width=int(width * 0.017625),
                                          height=int(height * 0.0027777777777778), bg=color[i], state=DISABLED,
                                          command=lambda i=i: [add_ingredient(i),
                                                               my_label[i].configure(bg=color[i],
@@ -305,15 +326,22 @@ def main():
                                 command=lambda: [add_base(0), forget_buttons(),
                                                  background(),
                                                  main_menu()])
-            back_label.grid(row=5, column=5, padx=(width * 0.2065841874084919, 0), pady=(width * 0.059809663250366, 0))
-
-            add_cart_label = Button(root, fg="white", font="TimesNewRoman 8 bold", text=f"Add to Cart",
-                                    width=int(width * 0.015625),
-                                    height=int(height * 0.0027777777777778), bg="green",
-                                    command=lambda: [add_to_cart(), add_base(0), lock_buttons(""), forget_buttons(),
-                                                     reset_status(),
-                                                     main_menu()])
-            add_cart_label.grid(row=1, column=5, padx=(width * 0.2065841874084919, 0),
+            back_label.grid(row=5, column=5, padx=(width * 0.1565841874084919, 0), pady=(width * 0.059809663250366, 0))
+            if base == 'Drink':
+                add_cart_label = Button(root, fg="white", font="TimesNewRoman 8 bold", text=f"Add to Cart",
+                                        width=int(width * 0.015625),
+                                        height=int(height * 0.0027777777777778), bg="green",
+                                        command=lambda: [add_to_cart(), lock_buttons(""), forget_buttons(),
+                                                         reset_status(), background(),
+                                                         options(drinks), add_message()])
+            else:
+                add_cart_label = Button(root, fg="white", font="TimesNewRoman 8 bold", text=f"Add to Cart",
+                                        width=int(width * 0.015625),
+                                        height=int(height * 0.0027777777777778), bg="green",
+                                        command=lambda: [add_to_cart(), lock_buttons(""), forget_buttons(),
+                                                         reset_status(), background(), options(extras),
+                                                         add_message()])
+            add_cart_label.grid(row=1, column=5, padx=(width * 0.1565841874084919, 0),
                                 pady=(width * 0.109809663250366, 0))
 
     def background():
@@ -405,7 +433,7 @@ def main():
         total_price += price
         if "With" in status.values() or "Extra" in status.values() or "1L" in status.values() \
                 or "2.5L" in status.values() or "1 Serving of" in status.values() or "2 Servings of" in status.values():
-            if base not in ('Drink', 'Dessert'):
+            if base not in ('Drink', 'Extra'):
                 cart.write(f"\n{base} Pizza\n")
                 cart_exp += f"\n{base} Pizza\n"
                 for i in status:
@@ -458,11 +486,10 @@ def main():
                                      height=int(height * 0.0027777777777778), bg="red",
                                      command=lambda: [forget_buttons(), main_menu()])
         checkout_back_label.grid(row=7, column=1)
-        clear_label = Button(root, fg="white", font="TimesNewRoman 8 bold", text="Clear Cart",
+        clear_label = Button(root, fg="white", font="TimesNewRoman 8 bold", text=clear_message,
                              width=int(width * 0.015625),
-                             height=int(height * 0.0027777777777778), bg="orange",
-                             command=lambda: [clean_cart(),
-                                              clear_label.configure(bg='red', text=clear_message)])
+                             height=int(height * 0.0027777777777778), bg=color['clear'],
+                             command=lambda: [clear_label.configure(bg='red', text='Are you sure?'), clean_cart()])
         clear_label.grid(row=4, column=1)
 
         cart_label_1 = Label(root, text=f"Total:{total_price}" + f"{cart_exp[:450]}", font='Arial 12', bg='#fcfcfc')
@@ -541,21 +568,28 @@ def main():
         return True
 
     def clean_cart():
-        global clear_message, cart_exp, nop, total_price
+        global clear_message, cart_exp, nop, nod, nodt, total_price
         if cart_exp != "":
             if clear_message != "Are you sure?":
                 clear_message = "Are you sure?"
+                color['clear'] = 'red'
             else:
                 cart.truncate(0)
                 cart_exp = ""
                 clear_message = "Cart Cleared"
-                total_price, nop = 0, 0
+                color['clear'] = 'lime'
+                total_price, nop, nod, nodt = 0, 0, 0, 0
                 forget_buttons()
                 checkout_screen()
                 reset_status()
 
         else:
             raise Exception("Gave Up")
+
+    def add_message():
+        message_label = Label(root, text="Items have been added to your cart!", bg='#fcfcfc', fg='lime',
+                              font=('ariel', 20))
+        message_label.grid(row=3, column=5, padx=(width * 0.2065841874084919, 0), pady=(width * 0.06, 0))
 
     main_menu()
     root.mainloop()
