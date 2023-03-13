@@ -1,2 +1,20 @@
 
+Classic Pizza
+With Meat
+With Cheese
+With Tomato
+With Mushroom
+With Sausage
+With Sweetcorn
+With Green pepper
+Extra Pepperoni
+With Black olives
+2 Packets of Mustard
+1 Packet of Barbeque Sauce
+Price : 124.0
+
+Drink:
+2.5L Ice Tea
+Price : 10.0
+
 -abandoned-
