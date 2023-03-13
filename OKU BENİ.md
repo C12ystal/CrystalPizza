@@ -35,7 +35,7 @@ ve fiyata yansıtır.
 
 Karşınıza gelen ekranın sağ tarafında siparişinizin detayları, ortasında işlem tuşları bulunur; sol tarafında ise sizden bilgileriniz alınır.
 "Go Back" tuşuna basarak ana menüye geri dönebilirsiniz
-"Clear Cart" tuşuna bastığınızda size emin misiniz diye sorar, tekrar bastığınızda ise sepetinizi temizler ve bulunduğunuz ekranı yeniler.
+"Clear Cart" tuşuna bastığınızda size "Are you sure?" diye sorar, tekrar bastığınızda ise sepetinizi temizler ve bulunduğunuz ekranı yeniler.
 Bu işlem girdiğiniz bilgilerin silinmesine sebep olur!
 
 Bilgilerinizi doldurup "Make Purchase" tuşuna bastığınızda:
