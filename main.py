@@ -40,11 +40,11 @@ def main():
     height = int(root.winfo_screenheight())
     width = int(root.winfo_screenwidth())
     root.attributes('-fullscreen', True)
-    bg = PhotoImage(file="background.png")
+    bg = PhotoImage(file="images/background.png")
 
     for a in ('margherita', 'turk', 'classic', 'drinks', 'extras', 'checkout', 'custom'):
         images[a] = ImageTk.PhotoImage(
-            Image.open(f"{a}.png").resize((int(width * 0.2562225475841874), int(height * 0.3515625)), Image.LANCZOS))
+            Image.open(f"images/{a}.png").resize((int(width * 0.2562225475841874), int(height * 0.3515625)), Image.LANCZOS))
 
     def main_menu():
         forget_buttons()
@@ -358,11 +358,11 @@ def main():
         except AttributeError:
             pass
         if base in ('Classic', 'Turk', 'Custom', 'Margherita'):
-            new = PhotoImage(file="choose.png")
+            new = PhotoImage(file="images/choose.png")
             background_label = Label(root, image=new)
             background_label.place(x=0, y=0)
         else:
-            new = PhotoImage(file="background.png")
+            new = PhotoImage(file="images/background.png")
             background_label = Label(root, image=new)
             background_label.place(x=0, y=0)
 
