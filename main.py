@@ -6,7 +6,7 @@ import datetime
 
 my_label, images, status, color = {}, {}, {}, {}
 
-cart = open("cart.txt", 'w')
+purchases = open("purchases.txt", 'w')
 
 total_price, price, base, nop, nod, background_label, new, image_margherita, image_turk, image_classic, nodt, cart_exp, \
     clear_message = 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", "Clear Cart"
@@ -40,12 +40,15 @@ def main():
     height = int(root.winfo_screenheight())
     width = int(root.winfo_screenwidth())
     root.attributes('-fullscreen', True)
-    bg = PhotoImage(file="background.png")
+    bg = PhotoImage(file="images/background.png")
 
+    # This for loop opens all the images
     for a in ('margherita', 'turk', 'classic', 'drinks', 'extras', 'checkout', 'custom'):
         images[a] = ImageTk.PhotoImage(
-            Image.open(f"{a}.png").resize((int(width * 0.2562225475841874), int(height * 0.3515625)), Image.LANCZOS))
+            Image.open(f"images/{a}.png").resize((int(width * 0.2562225475841874), int(height * 0.3515625)),
+                                                 Image.LANCZOS))
 
+    # This function is here to kill any existing widgets on screen and display the main menu widgets on command
     def main_menu():
         forget_buttons()
         background()
@@ -67,7 +70,7 @@ def main():
                                                 options(drinks), lock_buttons("")])
         exit_button = Button(root, bg='red', font="arial, 15 bold", text='x', width=2,
                              height=1, fg='white',
-                             command=lambda: [cart.write("\n-abandoned-"), cart.close(), root.destroy()])
+                             command=lambda: [purchases.write("\n-abandoned-"), purchases.close(), root.destroy()])
         exit_button.place(x=width - width / 35, y=width / 300)
         button_pizza.place(x=width * 0.23, y=width * 0.22)
         nop_label.place(x=width * 0.20, y=width * 0.22)
@@ -84,6 +87,7 @@ def main():
         image_checkout = Label(root, image=images['checkout'])
         image_checkout.place(x=width * 0.53, y=width * 0.28)
 
+    # This function resets the status of every ingredient on command
     def reset_status():
         global status, color, clear_message
         for i in pizza_ingredients + sauces:
@@ -95,6 +99,8 @@ def main():
         color['clear'] = 'Orange'
         clear_message = 'Clear Cart'
 
+    # This function is here to /
+    # decrease the amount of selected drinks and extras if you leave without adding them to your cart
     def fix_status():
         global nod, nodt
         for i in status:
@@ -103,8 +109,10 @@ def main():
             if status[i] == '1 Serving of':
                 nodt -= 1
 
+    # We run this function once to create the status and color dictionaries
     reset_status()
 
+    # This function computes the price of that specific item using the prices and the status dictionaries
     def comp_price():
         global price
         if base == 'Drink' or base == 'Extra':
@@ -133,12 +141,14 @@ def main():
                             font=('ariel', 20))
         price_label.grid(row=3, column=5, padx=(width * 0.1565841874084919, 0), pady=(width * 0.06, 0))
 
+    # This function disables every button except the ones we put in it making them 'enabled'
     def enable_buttons(ingredients):
         for i in pizza_ingredients + sauces + drinks + extras:
             if i not in ingredients:
                 color[i] = 'gray'
                 status[i] = 'Disabled'
 
+    # This function locks the buttons after the number of choices we made is equal to the number of pizzas in our cart
     def lock_buttons(ingredients):
         global status
         if base == 'Drink':
@@ -162,13 +172,14 @@ def main():
                         status[i] = '+'
                         my_label[i].configure(state=NORMAL, text=f"{status[i]} {i}")
 
+    # This one selects the pizza type
     def add_base(pizza_type):
         global base
-        base = 0
         base = pizza_type
         color[base] = "lime"
         background()
 
+    # This function allows us to change the status of an ingredient effectively adding it to our pizza
     def add_ingredient(ingredient):
         global nod, nodt
         if type(ingredient) == tuple:
@@ -240,6 +251,7 @@ def main():
 
     background_label.place(x=0, y=0)
 
+    # This function displays the opts it has been given on the screen
     def options(opts):
         y = 0
         x = 0
@@ -350,6 +362,7 @@ def main():
             add_cart_label.grid(row=1, column=5, padx=(width * 0.1565841874084919, 0),
                                 pady=(width * 0.109809663250366, 0))
 
+    # This function changes the background depending on our base
     def background():
         global background_label
         global new
@@ -358,14 +371,15 @@ def main():
         except AttributeError:
             pass
         if base in ('Classic', 'Turk', 'Custom', 'Margherita'):
-            new = PhotoImage(file="choose.png")
+            new = PhotoImage(file="images/choose.png")
             background_label = Label(root, image=new)
             background_label.place(x=0, y=0)
         else:
-            new = PhotoImage(file="background.png")
+            new = PhotoImage(file="images/background.png")
             background_label = Label(root, image=new)
             background_label.place(x=0, y=0)
 
+    # This function displays all the types of pizzas you can pick as buttons
     def pizza_type_buttons():
         global image_margherita
         global image_turk
@@ -429,74 +443,85 @@ def main():
         image_custom = Label(root, image=images['custom'])
         image_custom.place(x=width * 0.38, y=width * 0.28)
 
+    # Destroys every widget on screen
     def forget_buttons():
         for widget in root.winfo_children():
             widget.destroy()
 
     def add_to_cart():
         global total_price, cart_exp, nop
-        global cart
+        global purchases
         total_price += price
         if "With" in status.values() or "Extra" in status.values() or "1L" in status.values() \
                 or "2.5L" in status.values() or "1 Serving of" in status.values() or "2 Servings of" in status.values():
             if base not in ('Drink', 'Extra'):
-                cart.write(f"\n{base} Pizza\n")
+                purchases.write(f"\n{base} Pizza\n")
                 cart_exp += f"\n{base} Pizza\n"
                 for i in status:
                     if base != "Custom" and i not in sauces and status[i] != "Disabled":
-                        cart.write(f"{status[i]} {i}\n")
+                        purchases.write(f"{status[i]} {i}\n")
                         cart_exp += f"{status[i]} {i}\n"
                     elif base != "Custom" and status[i] not in ("No", "Disabled"):
-                        cart.write(f"{status[i]} {i}\n")
+                        purchases.write(f"{status[i]} {i}\n")
                         cart_exp += f"{status[i]} {i}\n"
                     elif status[i] not in ("No", "Disabled"):
-                        cart.write(f"{status[i]} {i}\n")
+                        purchases.write(f"{status[i]} {i}\n")
                         cart_exp += f"{status[i]} {i}\n"
                 nop += 1
             else:
-                cart.write(f"\n{base}:\n")
+                purchases.write(f"\n{base}:\n")
                 cart_exp += f"\n{base}:\n"
                 for i in status:
                     if status[i] not in ("+", "No", "Disabled"):
-                        cart.write(f"{status[i]} {i}\n")
+                        purchases.write(f"{status[i]} {i}\n")
                         cart_exp += f"{status[i]} {i}\n"
-            cart.write(f"Price : {price}\n")
+            purchases.write(f"Price : {price}\n")
             cart_exp += f"Price : {price}\n"
         else:
-            raise Exception("Gave Up")
+            raise Exception("Give Up")
 
     def checkout_screen():
         background()
+        global name_entry
+        name_label = Label(root, text="Your Name:", font='Arial, 24', bg='#fcfcfc')
+        name_entry = Entry(root, width=int(width / 100), font='Arial, 24')
+        name_label.grid(row=0, column=0, padx=width / 20, pady=(width / 10, width / 100))
+        name_entry.grid(row=1, column=0, padx=width / 20)
         global tc_entry
         tc_label = Label(root, text="Social Security Number:", font='Arial, 24', bg='#fcfcfc')
         tc_entry = Entry(root, width=int(width / 100), font='Arial, 24')
-        tc_label.grid(row=0, column=0, padx=width / 20, pady=(width / 7, width / 100))
-        tc_entry.grid(row=1, column=0, padx=width / 20)
+        tc_label.grid(row=2, column=0, padx=width / 20, pady=(width / 100, width / 100))
+        tc_entry.grid(row=3, column=0, padx=width / 20)
         global ccn_entry
         ccn_label = Label(root, text="Credit Card Number:", font='Arial, 24', bg='#fcfcfc')
         ccn_entry = Entry(root, width=int(width / 100), font='Arial, 24')
-        ccn_label.grid(row=2, column=0, padx=width / 20, pady=width / 100)
-        ccn_entry.grid(row=3, column=0, padx=width / 20)
+        ccn_label.grid(row=4, column=0, padx=width / 20, pady=width / 100)
+        ccn_entry.grid(row=5, column=0, padx=width / 20)
         global ccv_entry
         ccv_label = Label(root, text="CCV:", font='Arial, 24', bg='#fcfcfc')
         ccv_entry = Entry(root, width=int(width / 100), font='Arial, 24')
-        ccv_label.grid(row=4, column=0, padx=width / 100, pady=width / 100)
-        ccv_entry.grid(row=5, column=0, padx=width / 100)
+        ccv_label.grid(row=6, column=0, padx=width / 100, pady=width / 100)
+        ccv_entry.grid(row=7, column=0, padx=width / 100)
         global ccp_entry
         ccp_label = Label(root, text="Credit Card Password:", font='Arial, 24', bg='#fcfcfc')
         ccp_entry = Entry(root, width=int(width / 100), font='Arial, 24')
-        ccp_label.grid(row=6, column=0, padx=width / 100, pady=width / 100)
-        ccp_entry.grid(row=7, column=0, padx=width / 100)
+        ccp_label.grid(row=8, column=0, padx=width / 100, pady=width / 100)
+        ccp_entry.grid(row=9, column=0, padx=width / 100)
         checkout_back_label = Button(root, fg="white", font="TimesNewRoman 8 bold", text=f"Go Back",
                                      width=int(width * 0.015625),
                                      height=int(height * 0.0027777777777778), bg="red",
                                      command=lambda: [forget_buttons(), main_menu()])
-        checkout_back_label.grid(row=7, column=1)
-        clear_label = Button(root, fg="white", font="TimesNewRoman 8 bold", text=clear_message,
-                             width=int(width * 0.015625),
-                             height=int(height * 0.0027777777777778), bg=color['clear'],
-                             command=lambda: [clear_label.configure(bg='red', text='Are you sure?'), clean_cart()])
-        clear_label.grid(row=4, column=1)
+        checkout_back_label.grid(row=9, column=1)
+        if cart_exp != "":
+            clear_label = Button(root, fg="white", font="TimesNewRoman 8 bold", text=clear_message,
+                                 width=int(width * 0.015625),
+                                 height=int(height * 0.0027777777777778), bg=color['clear'],
+                                 command=lambda: [clear_label.configure(bg='red', text='Are you sure?'), clean_cart()])
+        else:
+            clear_label = Button(root, fg="white", font="TimesNewRoman 8 bold", text=clear_message,
+                                 width=int(width * 0.015625),
+                                 height=int(height * 0.0027777777777778), bg=color['clear'], state=DISABLED)
+        clear_label.grid(row=5, column=1)
 
         cart_label_1 = Label(root, text=f"Total:{total_price}" + f"{cart_exp[:450]}", font='Arial 12', bg='#fcfcfc')
         cart_label_1.place(x=width * 0.48, y=width / 16)
@@ -516,13 +541,14 @@ def main():
     def checkout():
         global cart_exp
         if nop >= 1:
-            info = {'Social Security Number': tc_entry.get(), 'Credit Card Number': ccn_entry.get(),
+            info = {'Name': name_entry.get(), 'Social Security Number': tc_entry.get(),
+                    'Credit Card Number': ccn_entry.get(),
                     'CCV': ccv_entry.get(),
                     'Credit Card Password': ccp_entry.get()}
-            character_limit = {'Social Security Number': 11, 'Credit Card Number': 16, 'CCV': 3,
+            character_limit = {'Name': 3, 'Social Security Number': 11, 'Credit Card Number': 16, 'CCV': 3,
                                'Credit Card Password': 4}
-            for i in ('Social Security Number', 'Credit Card Number', 'CCV', 'Credit Card Password'):
-                if i != 'Credit Card Password':
+            for i in character_limit:
+                if i != 'Credit Card Password' and i != 'Name':
                     if entry_int(character_limit[i], info[i], '='):
                         pass
                     else:
@@ -531,8 +557,8 @@ def main():
                         digit_error_label = Label(text=f"{i} must be {character_limit[i]} digits long!", bg='#fcfcfc',
                                                   fg='red')
                         digit_error_label.grid(row=20, column=0)
-                        raise Exception("Gave Up")
-                else:
+                        raise Exception("Give Up")
+                elif i == 'Credit Card Password':
                     if entry_int(character_limit[i], info[i], '>='):
                         pass
                     else:
@@ -540,22 +566,36 @@ def main():
                         blank_label.grid(row=20, column=0)
                         digit_error_label = Label(text=f"Enter a valid {i}!", bg='#fcfcfc', fg='red')
                         digit_error_label.grid(row=20, column=0)
-                        raise Exception("Gave Up")
+                        raise Exception("Give Up")
+                elif i == 'Name':
+                    if entry_str(info[i]) and info[i] != "":
+                        pass
+                    elif info[i] == "":
+                        blank_label = Label(text="⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀", bg='#fcfcfc')
+                        blank_label.grid(row=20, column=0)
+                        digit_error_label = Label(text=f"Name can't be empty!", bg='#fcfcfc', fg='red')
+                        digit_error_label.grid(row=20, column=0)
+                        raise Exception("Give Up")
+                    else:
+                        blank_label = Label(text="⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀", bg='#fcfcfc')
+                        blank_label.grid(row=20, column=0)
+                        digit_error_label = Label(text=f"Enter a valid {i}!", bg='#fcfcfc', fg='red')
+                        digit_error_label.grid(row=20, column=0)
+                        raise Exception("Give Up")
             try:
-                for i in info:
-                    int(info[i])
-                for i in info:
-                    cart.write(f"\n{i}:\n{int(info[i])}")
+                purchases.write(f"\nName:\n{info['Name']}")
+                for i in ('Credit Card Number', 'CCV', 'Credit Card Password', 'Social Security Number'):
+                    purchases.write(f"\n{i}:\n{int(info[i])}")
             except ValueError:
                 blank_label = Label(text="⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀", bg='#fcfcfc')
                 blank_label.grid(row=20, column=0)
                 error_label = Label(root, text="All the characters must be numbers!", bg='#fcfcfc', fg='red')
                 error_label.grid(row=20, column=0)
-                raise Exception("Gave Up")
-            cart.write(f"\nTotal Amount:{total_price}\n")
+                raise Exception("Give Up")
+            purchases.write(f"\nTotal Amount:{total_price}\n")
             cart_exp += f"\nTotal Amount:{total_price}\n"
-            cart.write(f"\nTime:{str(datetime.datetime.now())}")
-            cart.close()
+            purchases.write(f"\nTime:{str(datetime.datetime.now())}")
+            purchases.close()
             root.destroy()
         else:
             error_label = Label(root, text="You can't make an order without a pizza in it!", bg='#fcfcfc', fg='red')
@@ -573,14 +613,23 @@ def main():
                 return False
         return True
 
+    def entry_str(string):
+        for i in string:
+            try:
+                if type(int(i)) == int:
+                    return False
+            except ValueError:
+                pass
+        return True
+
     def clean_cart():
         global clear_message, cart_exp, nop, nod, nodt, total_price
         if cart_exp != "":
             if clear_message != "Are you sure?":
                 clear_message = "Are you sure?"
                 color['clear'] = 'red'
-            else:
-                cart.truncate(0)
+            elif clear_message == "Are you sure?":
+                purchases.truncate(0)
                 cart_exp = ""
                 clear_message = "Cart Cleared"
                 color['clear'] = 'lime'
@@ -590,7 +639,7 @@ def main():
                 reset_status()
 
         else:
-            raise Exception("Gave Up")
+            raise Exception("Give Up")
 
     def add_message():
         message_label = Label(root, text="Items have been added to your cart!", bg='#fcfcfc', fg='lime',

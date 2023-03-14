@@ -45,7 +45,9 @@ Bilgilerinizi doldurup "Make Purchase" tuşuna bastığınızda:
     
     Siparişinizde en az 1 pizza bulunmalıdır -sonuçta pizzacıdasınız-.
     Girdiğiniz bilgiler geçerli olmalıdır:
-      Bilgilerin hepsi sayılardan oluşmalıdır, herhangi birinin içinde harf bulunamaz.
+      İsim boş olamaz.
+      İsmin içinde sayı bulunamaz.
+      Bilgilerin geri kalanı sayılardan oluşmalıdır, herhangi birinin içinde harf bulunamaz.
       Bilgilerin her biri kendi karakter sayısına uymalıdır -Tc=11, Kart No=16, CCV=3, Kart Şifresi>=4-.
 
 Yukarıda Görülen şartlardan herhangi birinin karşılanmaması durumunda siparişinizi bitiremezsiniz.
